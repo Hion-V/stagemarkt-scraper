@@ -3,6 +3,7 @@ from bs4 import ResultSet
 from requests import request
 from time import sleep
 from datetime import datetime;
+import scrapeutils.datatypes as datatypes
 
 def construct_search_url(page_num):
     return f"https://stagemarkt.nl/leerbedrijven/?Termen=Software+developer+(25604)\
@@ -32,18 +33,18 @@ def extract_company_block_data(soup:BeautifulSoup):
         .contents[2]\
         .split()[2]
     name = soup.find(name='div', attrs={'class':'c-link-blocks-single-info'}).find('h2').text
-    return {
-        "name": name,
-        "leerbedrijf_id": leerbedrijf_id,
-        "url": url,
-        "last_scraped": None
-    }
+    return datatypes.Bedrijf(
+         name=name,
+         leerbedrijf_id=leerbedrijf_id,
+         url=url,
+         last_scraped= None
+    )
 
-def scrape_search_page(soup:BeautifulSoup):
+def scrape_search_page(soup:BeautifulSoup, mapReference:map):
         company_blocks = select_company_blocks(soup) 
         result_set = company_blocks.find_all(name="a", attrs={"class": "c-link-blocks-single"})
-        companies_map = {}
+        companies_map = mapReference
         for r in result_set:
             company_block_data = extract_company_block_data(r)
-            companies_map[company_block_data.get("leerbedrijf_id")] = company_block_data
+            companies_map[company_block_data.leerbedrijf_id] = company_block_data
         return companies_map
