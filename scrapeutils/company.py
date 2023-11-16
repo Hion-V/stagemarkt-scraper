@@ -19,6 +19,28 @@ def scroop_profile(bedrijf:Bedrijf):
         value = spans[1].text.strip()
         propdict[key] = value
     # print(propdict)
+    detailpane = soup.find("div", {'class':'c-detail-company'})
+    list = detailpane.find("ul")
+    print(list)
+    items = list.find_all('li')
+    propdict['adres'] = items[1].text
+    postcodeplaats:str = items[2].text.split(" ")
+    propdict['postcode'] = f"{postcodeplaats[0]}{postcodeplaats[1]}"
+    propdict['plaats'] = postcodeplaats[2]
+    propdict['land'] = items[3].text
+    for item in items:
+        item:BeautifulSoup = item
+        match item.contents[0].text.strip():
+            case "Tel:":
+                propdict['tel'] = item.contents[1].text
+                break
+            case "Email:":
+                propdict['email'] = item.contents[1].text
+                break
+        print(item)
+    print(propdict)
+
+
     return BedrijfProfiel(
         leerbedrijf_id=propdict.get("leerbedrijf_id"),
         naam=propdict.get("leerbedrijf_id"),

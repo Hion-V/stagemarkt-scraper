@@ -62,7 +62,7 @@ def scrape_search_pages(startpage=1, numpages=20):
 
 
 cache = parseJSON()
-result = scrape_search_pages(1, numpages)
+result = scrape_search_pages(1, 9)
 
 newdict: dict[str, Bedrijf] = {}
 
