@@ -4,6 +4,16 @@ from typing import Optional
 from datetime import datetime, timedelta
 
 
+@dataclass_json()
+@dataclass(frozen=False)
+class ContactGegevens:
+    adres: str
+    postcode: str
+    plaats: str
+    land: str
+    tel: str
+    email: str
+    website: str
 
 @dataclass_json()
 @dataclass(frozen=False)
@@ -17,6 +27,7 @@ class BedrijfProfiel:
     telefoon: str
     bedrijfsgrootte: str
     capaciteit: str
+    contact:Optional[ContactGegevens] = None
 
 @dataclass_json
 @dataclass(frozen=False)

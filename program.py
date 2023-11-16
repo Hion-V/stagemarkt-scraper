@@ -48,7 +48,7 @@ def scrape_search_pages(startpage=1, numpages=20):
                 req = request("GET", search.construct_search_url(current_page))
                 soup = BeautifulSoup(req.content, "html5lib")
                 result = search.scrape_search_page(soup, pageresults)
-                print(result)
+                # print(result)
                 pageresults = result
                 finished = True
             except AttributeError:
@@ -62,12 +62,12 @@ def scrape_search_pages(startpage=1, numpages=20):
 
 
 cache = parseJSON()
-result = scrape_search_pages(1, 9)
+result = scrape_search_pages(1, numpages=numpages)
 
 newdict: dict[str, Bedrijf] = {}
 
 
-rescrape_expiry = utc.localize(datetime.now() - timedelta(hours=1))
+rescrape_expiry = utc.localize(datetime.now() - timedelta(hours=0))
 
 
 for bedrijf_id in result.bedrijf_dict:

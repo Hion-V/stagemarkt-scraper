@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from scrapeutils.datatypes import Bedrijf, BedrijfProfiel
+from scrapeutils.datatypes import Bedrijf, BedrijfProfiel, ContactGegevens
 from requests import request
 
 def construct_company_url(relative_url:str):
@@ -21,7 +21,7 @@ def scroop_profile(bedrijf:Bedrijf):
     # print(propdict)
     detailpane = soup.find("div", {'class':'c-detail-company'})
     list = detailpane.find("ul")
-    print(list)
+    # print(list)
     items = list.find_all('li')
     propdict['adres'] = items[1].text
     postcodeplaats:str = items[2].text.split(" ")
@@ -33,15 +33,13 @@ def scroop_profile(bedrijf:Bedrijf):
         match item.contents[0].text.strip():
             case "Tel:":
                 propdict['tel'] = item.contents[1].text
-                break
-            case "Email:":
+            case "E-mail:":
                 propdict['email'] = item.contents[1].text
-                break
-        print(item)
-    print(propdict)
-
-
-    return BedrijfProfiel(
+            case "Website:":
+                propdict['website'] = item.contents[1].text
+        # print(item)
+    # print(propdict)
+    out:BedrijfProfiel = BedrijfProfiel(
         leerbedrijf_id=propdict.get("leerbedrijf_id"),
         naam=propdict.get("leerbedrijf_id"),
         kvk_naam=propdict.get("kvk_naam"),
@@ -50,5 +48,15 @@ def scroop_profile(bedrijf:Bedrijf):
         capaciteit=propdict.get("totale_capaciteit"),
         bedrijfsindeling=propdict.get("bedrijfsindeling"),
         telefoon=propdict.get("telefoon"),
-        bedrijfsgrootte=propdict.get("bedrijfsgrootte")
+        bedrijfsgrootte=propdict.get("bedrijfsgrootte"),
+        contact=ContactGegevens(
+            adres=propdict.get("adres"),
+            postcode=propdict.get("postcode"),
+            plaats=propdict.get("plaats"),
+            land=propdict.get("land"),
+            tel=propdict.get("tel"),
+            email=propdict.get("email"),
+            website=propdict.get("website")
+        )
     )
+    return out
